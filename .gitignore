@@ -1,0 +1,23 @@
+## Java
+
+*.class
+*.war
+*.ear
+hs_err_pid*
+
+## Gradle
+
+/local.properties
+.gradle/
+gradle-app.setting
+/build/
+/core/build/
+/desktop/build/
+.gradletasknamecache
+
+## OS Specific
+.DS_Store
+Thumbs.db
+
+## Intellij
+.idea/
