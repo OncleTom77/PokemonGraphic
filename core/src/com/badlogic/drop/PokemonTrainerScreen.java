@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Rectangle;
 
 import static com.badlogic.drop.Direction.*;
@@ -13,68 +12,65 @@ import static com.badlogic.drop.Direction.*;
 public class PokemonTrainerScreen implements Screen {
 
     private static final float ANIMATION_DURATION = 1 / 6f;
-    private static final float STEP_PRECISION = 1 / 10f;
+    private static final float STEP_PRECISION = 1 / 5f;
     private static final int UNIT_SIZE = 16;
     static final float STEP_SIZE = STEP_PRECISION * UNIT_SIZE;
 
     private final Drop game;
 
-    private final Texture walkTopTexture1;
-    private final Texture standTopTexture;
-    private final Texture walkTopTexture2;
-    private final Animation<Texture> walkTopAnimation;
+    private final Texture walkUpTexture1;
+    private final Texture standUpTexture;
+    private final Texture walkUpTexture2;
+    private final AnimationByStep walkUpAnimation;
 
-    private final Animation<Texture> walkRightAnimation;
     private final Texture walkRightTexture1;
     private final Texture standRightTexture;
     private final Texture walkRightTexture2;
+    private final AnimationByStep walkRightAnimation;
 
-    private final Texture walkBottomTexture1;
-    private final Texture standBottomTexture;
-    private final Texture walkBottomTexture2;
-    private final Animation<Texture> walkBottomAnimation;
+    private final Texture walkDownTexture1;
+    private final Texture standDownTexture;
+    private final Texture walkDownTexture2;
+    private final AnimationByStep walkDownAnimation;
 
-    private final Animation<Texture> walkLeftAnimation;
     private final Texture walkLeftTexture1;
     private final Texture standLeftTexture;
     private final Texture walkLeftTexture2;
+    private final AnimationByStep walkLeftAnimation;
 
     private final Texture pokemonCenterTexture;
     private Rectangle pokemonCenter;
 
     private Rectangle pokemonTrainer;
-    private float animationState;
-    private float lastTimeMove;
-    private boolean isMakingStep;
-    private boolean isStanding;
+    private double animationState;
+    private int nbTimeMove;
     private Direction direction;
+    private Rectangle targetPosition;
 
     PokemonTrainerScreen(Drop game) {
         this.game = game;
 
+        int frameDuration = (int) (1 / STEP_PRECISION);
+
         walkRightTexture1 = new Texture(Gdx.files.internal("trainer/right/walk_right_1.png"));
         standRightTexture = new Texture(Gdx.files.internal("trainer/right/stand_right.png"));
         walkRightTexture2 = new Texture(Gdx.files.internal("trainer/right/walk_right_2.png"));
-        walkRightAnimation = new Animation<>(ANIMATION_DURATION, walkRightTexture1, standRightTexture, walkRightTexture2);
-        walkRightAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        walkRightAnimation = new AnimationByStep(frameDuration, walkRightTexture1, standRightTexture, walkRightTexture2);
 
         walkLeftTexture1 = new Texture(Gdx.files.internal("trainer/left/walk_left_1.png"));
         standLeftTexture = new Texture(Gdx.files.internal("trainer/left/stand_left.png"));
         walkLeftTexture2 = new Texture(Gdx.files.internal("trainer/left/walk_left_2.png"));
-        walkLeftAnimation = new Animation<>(ANIMATION_DURATION, walkLeftTexture1, standLeftTexture, walkLeftTexture2);
-        walkLeftAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        walkLeftAnimation = new AnimationByStep(frameDuration, walkLeftTexture1, standLeftTexture, walkLeftTexture2);
 
-        walkTopTexture1 = new Texture(Gdx.files.internal("trainer/top/walk_top_1.png"));
-        standTopTexture = new Texture(Gdx.files.internal("trainer/top/stand_top.png"));
-        walkTopTexture2 = new Texture(Gdx.files.internal("trainer/top/walk_top_2.png"));
-        walkTopAnimation = new Animation<>(ANIMATION_DURATION, walkTopTexture1, standTopTexture, walkTopTexture2);
-        walkTopAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        walkUpTexture1 = new Texture(Gdx.files.internal("trainer/top/walk_top_1.png"));
+        standUpTexture = new Texture(Gdx.files.internal("trainer/top/stand_top.png"));
+        walkUpTexture2 = new Texture(Gdx.files.internal("trainer/top/walk_top_2.png"));
+        walkUpAnimation = new AnimationByStep(frameDuration, walkUpTexture1, standUpTexture, walkUpTexture2);
 
-        walkBottomTexture1 = new Texture(Gdx.files.internal("trainer/bottom/walk_bottom_1.png"));
-        standBottomTexture = new Texture(Gdx.files.internal("trainer/bottom/stand_bottom.png"));
-        walkBottomTexture2 = new Texture(Gdx.files.internal("trainer/bottom/walk_bottom_2.png"));
-        walkBottomAnimation = new Animation<>(ANIMATION_DURATION, walkBottomTexture1, standBottomTexture, walkBottomTexture2);
-        walkBottomAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        walkDownTexture1 = new Texture(Gdx.files.internal("trainer/bottom/walk_bottom_1.png"));
+        standDownTexture = new Texture(Gdx.files.internal("trainer/bottom/stand_bottom.png"));
+        walkDownTexture2 = new Texture(Gdx.files.internal("trainer/bottom/walk_bottom_2.png"));
+        walkDownAnimation = new AnimationByStep(frameDuration, walkDownTexture1, standDownTexture, walkDownTexture2);
 
         pokemonTrainer = new Rectangle();
         pokemonTrainer.width = 2;
@@ -84,15 +80,13 @@ public class PokemonTrainerScreen implements Screen {
 
         pokemonCenterTexture = new Texture(Gdx.files.internal("pokemon_center.png"));
         pokemonCenter = new Rectangle();
-        pokemonCenter.width = 10;
-        pokemonCenter.height = 8;
+        pokemonCenter.width = 12;
+        pokemonCenter.height = 10;
         pokemonCenter.x = 5 * UNIT_SIZE;
         pokemonCenter.y = 5 * UNIT_SIZE;
 
         animationState = 0;
-        lastTimeMove = 0;
-        isStanding = true;
-        isMakingStep = false;
+        nbTimeMove = 0;
         direction = RIGHT;
     }
 
@@ -108,30 +102,31 @@ public class PokemonTrainerScreen implements Screen {
 
         update(delta);
 
+        boolean isStanding = targetPosition == null;
         Texture currentFrame;
-        if (direction == TOP) {
+        if (direction == UP) {
             if (isStanding) {
-                currentFrame = standTopTexture;
+                currentFrame = standUpTexture;
             } else {
-                currentFrame = walkTopAnimation.getKeyFrame(animationState, true);
+                currentFrame = walkUpAnimation.getFrameForStep(nbTimeMove);
             }
         } else if (direction == RIGHT) {
             if (isStanding) {
                 currentFrame = standRightTexture;
             } else {
-                currentFrame = walkRightAnimation.getKeyFrame(animationState, true);
+                currentFrame = walkRightAnimation.getFrameForStep(nbTimeMove);
             }
-        } else if (direction == BOTTOM) {
+        } else if (direction == DOWN) {
             if (isStanding) {
-                currentFrame = standBottomTexture;
+                currentFrame = standDownTexture;
             } else {
-                currentFrame = walkBottomAnimation.getKeyFrame(animationState, true);
+                currentFrame = walkDownAnimation.getFrameForStep(nbTimeMove);
             }
         } else {
             if (isStanding) {
                 currentFrame = standLeftTexture;
             } else {
-                currentFrame = walkLeftAnimation.getKeyFrame(animationState, true);
+                currentFrame = walkLeftAnimation.getFrameForStep(nbTimeMove);
             }
         }
 
@@ -143,51 +138,48 @@ public class PokemonTrainerScreen implements Screen {
 
     private void update(float deltaTime) {
 
-        if ((pokemonTrainer.x * 10) % (STEP_SIZE * 10) != 0 || (pokemonTrainer.y * 10) % (STEP_SIZE * 10) != 0) {
-            System.out.println("ERROR !! " + pokemonTrainer.x + " : " + pokemonTrainer.y);
+        // if the target position is set, continue to move the trainer in the current direction
+        if (targetPosition != null) {
+            manageMovement(deltaTime, direction);
+            return;
         }
 
-        // If RIGHT key is pressed or the trainer is currently in middle state of animation (not in the standing sprite),
-        // we move to the right
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) || (direction == TOP && isMakingStep)) {
-            manageMovement(deltaTime, TOP, walkTopAnimation);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || (direction == RIGHT && isMakingStep)) {
-            manageMovement(deltaTime, RIGHT, walkRightAnimation);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || (direction == BOTTOM && isMakingStep)) {
-            manageMovement(deltaTime, BOTTOM, walkBottomAnimation);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || (direction == LEFT && isMakingStep)) {
-            manageMovement(deltaTime, LEFT, walkLeftAnimation);
+        // If RIGHT key is pressed we set the target position to the next right tile
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            targetPosition = new Rectangle(pokemonTrainer.x, pokemonTrainer.y + UNIT_SIZE, pokemonTrainer.width, pokemonTrainer.height);
+            manageMovement(deltaTime, UP);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            targetPosition = new Rectangle(pokemonTrainer.x + UNIT_SIZE, pokemonTrainer.y, pokemonTrainer.width, pokemonTrainer.height);
+            manageMovement(deltaTime, RIGHT);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            targetPosition = new Rectangle(pokemonTrainer.x, pokemonTrainer.y - UNIT_SIZE, pokemonTrainer.width, pokemonTrainer.height);
+            manageMovement(deltaTime, DOWN);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            targetPosition = new Rectangle(pokemonTrainer.x - UNIT_SIZE, pokemonTrainer.y, pokemonTrainer.width, pokemonTrainer.height);
+            manageMovement(deltaTime, LEFT);
         } else {
-            isStanding = true;
-            lastTimeMove = 0;
             animationState = 0;
-
-            if (pokemonTrainer.x % UNIT_SIZE != 0) {
-                System.out.println("ERROR !!");
-            }
+            nbTimeMove = 0;
         }
     }
 
-    private void manageMovement(float deltaTime, Direction direction, Animation animation) {
+    private void manageMovement(float deltaTime, Direction direction) {
         if (this.direction != direction) {
             this.direction = direction;
             animationState = 0;
-            lastTimeMove = 0;
+            nbTimeMove = 0;
         }
 
         animationState += deltaTime;
-        lastTimeMove += deltaTime;
 
-        // Move the trainer each 1/10 of the animation of 1/10 unit of the game (1/10 of 16px)
-        // Thus, the trainer moves to 16px per animation step
-        if (lastTimeMove >= STEP_PRECISION * ANIMATION_DURATION) {
-            lastTimeMove = 0;
+        while (animationState >= (nbTimeMove + 1) * STEP_PRECISION * ANIMATION_DURATION) {
+            nbTimeMove++;
             pokemonTrainer = direction.updateRectPosition(pokemonTrainer);
-        }
 
-        int index = animation.getKeyFrameIndex(animationState);
-        isMakingStep = index != 1;
-        isStanding = false;
+            if (pokemonTrainer.x == targetPosition.x && pokemonTrainer.y == targetPosition.y) {
+                targetPosition = null;
+            }
+        }
     }
 
     @Override
@@ -220,13 +212,13 @@ public class PokemonTrainerScreen implements Screen {
         standLeftTexture.dispose();
         walkLeftTexture2.dispose();
 
-        walkTopTexture1.dispose();
-        standTopTexture.dispose();
-        walkTopTexture2.dispose();
+        walkUpTexture1.dispose();
+        standUpTexture.dispose();
+        walkUpTexture2.dispose();
 
-        walkBottomTexture1.dispose();
-        standBottomTexture.dispose();
-        walkBottomTexture2.dispose();
+        walkDownTexture1.dispose();
+        standDownTexture.dispose();
+        walkDownTexture2.dispose();
 
         pokemonCenterTexture.dispose();
     }

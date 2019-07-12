@@ -8,7 +8,7 @@ import static com.badlogic.drop.PokemonTrainerScreen.*;
 
 public enum Direction {
 
-    TOP(position -> {
+    UP(position -> {
         position.y = computeNewPositionWith2DigitsPrecisionValue(position.y + STEP_SIZE);
         return position;
     }),
@@ -16,7 +16,7 @@ public enum Direction {
         position.x = computeNewPositionWith2DigitsPrecisionValue(position.x + STEP_SIZE);
         return position;
     }),
-    BOTTOM(position -> {
+    DOWN(position -> {
         position.y = computeNewPositionWith2DigitsPrecisionValue(position.y - STEP_SIZE);
         return position;
     }),
