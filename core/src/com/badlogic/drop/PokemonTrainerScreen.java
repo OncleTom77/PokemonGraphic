@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -47,6 +48,8 @@ public class PokemonTrainerScreen implements Screen {
     private Direction direction;
     private Rectangle targetPosition;
 
+    private OrthographicCamera cam;
+
     PokemonTrainerScreen(Drop game) {
         this.game = game;
 
@@ -88,6 +91,17 @@ public class PokemonTrainerScreen implements Screen {
         animationState = 0;
         nbTimeMove = 0;
         direction = RIGHT;
+
+        float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+
+        // Constructs a new OrthographicCamera, using the given viewport width and height
+        // Height is multiplied by aspect ratio.
+        cam = new OrthographicCamera();
+        cam.setToOrtho(false, w, h);
+
+//        cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
+        cam.update();
     }
 
     @Override
@@ -97,10 +111,15 @@ public class PokemonTrainerScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        update(delta);
+        cam.position.x = pokemonTrainer.x;
+        cam.position.y = pokemonTrainer.y;
+
+        cam.update();
+        game.batch.setProjectionMatrix(cam.combined);
+
         Gdx.gl.glClearColor(1, 1, 1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        update(delta);
 
         boolean isStanding = targetPosition == null;
         Texture currentFrame;
@@ -131,8 +150,8 @@ public class PokemonTrainerScreen implements Screen {
         }
 
         game.batch.begin();
-        game.batch.draw(pokemonCenterTexture, pokemonCenter.x, pokemonCenter.y, pokemonCenter.width * UNIT_SIZE, pokemonCenter.height * UNIT_SIZE * ((float) pokemonCenterTexture.getHeight() / pokemonCenterTexture.getWidth()));
-        game.batch.draw(currentFrame, pokemonTrainer.x, pokemonTrainer.y, pokemonTrainer.width * UNIT_SIZE, pokemonTrainer.height * UNIT_SIZE * ((float) currentFrame.getHeight() / currentFrame.getWidth()));
+        game.batch.draw(pokemonCenterTexture, pokemonCenter.x, pokemonCenter.y, pokemonCenter.width * UNIT_SIZE, pokemonCenter.width * UNIT_SIZE * ((float) pokemonCenterTexture.getHeight() / pokemonCenterTexture.getWidth()));
+        game.batch.draw(currentFrame, pokemonTrainer.x, pokemonTrainer.y, pokemonTrainer.width * UNIT_SIZE, pokemonTrainer.width * UNIT_SIZE * ((float) currentFrame.getHeight() / currentFrame.getWidth()));
         game.batch.end();
     }
 
@@ -184,7 +203,9 @@ public class PokemonTrainerScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+//        cam.viewportWidth = width/32f;  //We will see width/32f units!
+//        cam.viewportHeight = cam.viewportWidth * height/width;
+//        cam.update();
     }
 
     @Override
