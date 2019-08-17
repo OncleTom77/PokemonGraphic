@@ -121,6 +121,16 @@ public class PokemonTrainerScreen implements Screen {
         Gdx.gl.glClearColor(1, 1, 1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        Texture currentFrame = getPokemonTrainerTexture();
+
+        game.batch.begin();
+        game.batch.draw(pokemonCenterTexture, pokemonCenter.x, pokemonCenter.y, pokemonCenter.width * UNIT_SIZE, pokemonCenter.width * UNIT_SIZE * ((float) pokemonCenterTexture.getHeight() / pokemonCenterTexture.getWidth()));
+        game.batch.draw(currentFrame, pokemonTrainer.x, pokemonTrainer.y, pokemonTrainer.width * UNIT_SIZE, pokemonTrainer.width * UNIT_SIZE * ((float) currentFrame.getHeight() / currentFrame.getWidth()));
+//        game.font.draw(game.batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+        game.batch.end();
+    }
+
+    private Texture getPokemonTrainerTexture() {
         boolean isStanding = targetPosition == null;
         Texture currentFrame;
         if (direction == UP) {
@@ -148,11 +158,7 @@ public class PokemonTrainerScreen implements Screen {
                 currentFrame = walkLeftAnimation.getFrameForStep(nbTimeMove);
             }
         }
-
-        game.batch.begin();
-        game.batch.draw(pokemonCenterTexture, pokemonCenter.x, pokemonCenter.y, pokemonCenter.width * UNIT_SIZE, pokemonCenter.width * UNIT_SIZE * ((float) pokemonCenterTexture.getHeight() / pokemonCenterTexture.getWidth()));
-        game.batch.draw(currentFrame, pokemonTrainer.x, pokemonTrainer.y, pokemonTrainer.width * UNIT_SIZE, pokemonTrainer.width * UNIT_SIZE * ((float) currentFrame.getHeight() / currentFrame.getWidth()));
-        game.batch.end();
+        return currentFrame;
     }
 
     private void update(float deltaTime) {

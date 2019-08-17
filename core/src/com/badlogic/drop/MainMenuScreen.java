@@ -49,6 +49,9 @@ public class MainMenuScreen implements Screen {
         } else if (Gdx.input.isKeyPressed(Input.Keys.P)) {
             game.setScreen(new PokemonTrainerScreen(game));
             dispose();
+        } else if (Gdx.input.isKeyPressed(Input.Keys.T)) {
+            game.setScreen(new TiledMapScreen(game));
+            dispose();
         }
     }
 
