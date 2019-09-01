@@ -6,16 +6,27 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
+
 import static com.badlogic.drop.Direction.*;
+import static java.util.stream.Collectors.toList;
 
 public class PokemonTrainerScreen implements Screen {
 
     private static final float ANIMATION_DURATION = 1 / 6f;
     private static final float STEP_PRECISION = 1 / 5f;
     private static final int UNIT_SIZE = 16;
-    static final float STEP_SIZE = STEP_PRECISION * UNIT_SIZE;
+    static final float STEP_SIZE = STEP_PRECISION;
+    private static final float ZOOM_VALUE = 25;
 
     private final Drop game;
 
@@ -40,6 +51,8 @@ public class PokemonTrainerScreen implements Screen {
     private final AnimationByStep walkLeftAnimation;
 
     private final Texture pokemonCenterTexture;
+    private final TiledMap map;
+    private final OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     private Rectangle pokemonCenter;
 
     private Rectangle pokemonTrainer;
@@ -49,6 +62,7 @@ public class PokemonTrainerScreen implements Screen {
     private Rectangle targetPosition;
 
     private OrthographicCamera cam;
+    private List<Rectangle> collisionBoxes;
 
     PokemonTrainerScreen(Drop game) {
         this.game = game;
@@ -76,17 +90,17 @@ public class PokemonTrainerScreen implements Screen {
         walkDownAnimation = new AnimationByStep(frameDuration, walkDownTexture1, standDownTexture, walkDownTexture2);
 
         pokemonTrainer = new Rectangle();
-        pokemonTrainer.width = 2;
-        pokemonTrainer.height = 2;
+        pokemonTrainer.width = 1;
+        pokemonTrainer.height = 1;
         pokemonTrainer.x = UNIT_SIZE;
         pokemonTrainer.y = UNIT_SIZE;
 
         pokemonCenterTexture = new Texture(Gdx.files.internal("pokemon_center.png"));
         pokemonCenter = new Rectangle();
-        pokemonCenter.width = 12;
-        pokemonCenter.height = 10;
-        pokemonCenter.x = 5 * UNIT_SIZE;
-        pokemonCenter.y = 5 * UNIT_SIZE;
+        pokemonCenter.width = 5;
+        pokemonCenter.height = 5 * 7f/8f;
+        pokemonCenter.x = 5;
+        pokemonCenter.y = 5;
 
         animationState = 0;
         nbTimeMove = 0;
@@ -98,10 +112,25 @@ public class PokemonTrainerScreen implements Screen {
         // Constructs a new OrthographicCamera, using the given viewport width and height
         // Height is multiplied by aspect ratio.
         cam = new OrthographicCamera();
-        cam.setToOrtho(false, w, h);
+        cam.setToOrtho(false, ZOOM_VALUE, ZOOM_VALUE * h / w);
 
 //        cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
         cam.update();
+
+        map = new TmxMapLoader().load("first_map.tmx");
+
+        orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(map, 1f / UNIT_SIZE);
+
+        MapLayer collision_boxes = map.getLayers().get("collision_boxes");
+        collisionBoxes = StreamSupport.stream(collision_boxes.getObjects().spliterator(), true)
+                .map(object -> new Rectangle(
+                                object.getProperties().get("x", Float.class) / UNIT_SIZE,
+                                object.getProperties().get("y", Float.class) / UNIT_SIZE,
+                                object.getProperties().get("width", Float.class) / UNIT_SIZE,
+                                object.getProperties().get("height", Float.class) / UNIT_SIZE
+                        )
+                )
+                .collect(toList());
     }
 
     @Override
@@ -116,18 +145,29 @@ public class PokemonTrainerScreen implements Screen {
         cam.position.y = pokemonTrainer.y;
 
         cam.update();
-        game.batch.setProjectionMatrix(cam.combined);
+//        game.batch.setProjectionMatrix(cam.combined);
 
         Gdx.gl.glClearColor(1, 1, 1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        orthogonalTiledMapRenderer.setView(cam);
+        orthogonalTiledMapRenderer.render();
+
         Texture currentFrame = getPokemonTrainerTexture();
 
-        game.batch.begin();
-        game.batch.draw(pokemonCenterTexture, pokemonCenter.x, pokemonCenter.y, pokemonCenter.width * UNIT_SIZE, pokemonCenter.width * UNIT_SIZE * ((float) pokemonCenterTexture.getHeight() / pokemonCenterTexture.getWidth()));
-        game.batch.draw(currentFrame, pokemonTrainer.x, pokemonTrainer.y, pokemonTrainer.width * UNIT_SIZE, pokemonTrainer.width * UNIT_SIZE * ((float) currentFrame.getHeight() / currentFrame.getWidth()));
+        Batch batch = orthogonalTiledMapRenderer.getBatch();
+        batch.begin();
+
+        if (pokemonTrainer.y > pokemonCenter.y) {
+            batch.draw(currentFrame, pokemonTrainer.x, pokemonTrainer.y, pokemonTrainer.width, pokemonTrainer.width * ((float) currentFrame.getHeight() / currentFrame.getWidth()));
+            batch.draw(pokemonCenterTexture, pokemonCenter.x, pokemonCenter.y, pokemonCenter.width, pokemonCenter.width * ((float) pokemonCenterTexture.getHeight() / pokemonCenterTexture.getWidth()));
+        } else {
+            batch.draw(pokemonCenterTexture, pokemonCenter.x, pokemonCenter.y, pokemonCenter.width, pokemonCenter.width * ((float) pokemonCenterTexture.getHeight() / pokemonCenterTexture.getWidth()));
+            batch.draw(currentFrame, pokemonTrainer.x, pokemonTrainer.y, pokemonTrainer.width, pokemonTrainer.width * ((float) currentFrame.getHeight() / currentFrame.getWidth()));
+        }
+
 //        game.font.draw(game.batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
-        game.batch.end();
+        batch.end();
     }
 
     private Texture getPokemonTrainerTexture() {
@@ -171,20 +211,31 @@ public class PokemonTrainerScreen implements Screen {
 
         // If RIGHT key is pressed we set the target position to the next right tile
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            targetPosition = new Rectangle(pokemonTrainer.x, pokemonTrainer.y + UNIT_SIZE, pokemonTrainer.width, pokemonTrainer.height);
-            manageMovement(deltaTime, UP);
+            trySetNewTargetPosition(deltaTime, UP);
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            targetPosition = new Rectangle(pokemonTrainer.x + UNIT_SIZE, pokemonTrainer.y, pokemonTrainer.width, pokemonTrainer.height);
-            manageMovement(deltaTime, RIGHT);
+            trySetNewTargetPosition(deltaTime, RIGHT);
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            targetPosition = new Rectangle(pokemonTrainer.x, pokemonTrainer.y - UNIT_SIZE, pokemonTrainer.width, pokemonTrainer.height);
-            manageMovement(deltaTime, DOWN);
+            trySetNewTargetPosition(deltaTime, DOWN);
         } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            targetPosition = new Rectangle(pokemonTrainer.x - UNIT_SIZE, pokemonTrainer.y, pokemonTrainer.width, pokemonTrainer.height);
-            manageMovement(deltaTime, LEFT);
+            trySetNewTargetPosition(deltaTime, LEFT);
         } else {
             animationState = 0;
             nbTimeMove = 0;
+        }
+    }
+
+    private void trySetNewTargetPosition(float deltaTime, Direction direction) {
+        Rectangle newTargetPosition = direction.getNewTargetPosition(pokemonTrainer);
+
+        Optional<Rectangle> collision = collisionBoxes.stream()
+                .filter(newTargetPosition::overlaps)
+                .findAny();
+
+        if (!collision.isPresent()) {
+            targetPosition = newTargetPosition;
+            manageMovement(deltaTime, direction);
+        } else {
+            this.direction = direction;
         }
     }
 
@@ -201,6 +252,11 @@ public class PokemonTrainerScreen implements Screen {
             nbTimeMove++;
             pokemonTrainer = direction.updateRectPosition(pokemonTrainer);
 
+            if (targetPosition == null) {
+                System.out.println("null");
+                break;
+            }
+
             if (pokemonTrainer.x == targetPosition.x && pokemonTrainer.y == targetPosition.y) {
                 targetPosition = null;
             }
@@ -209,9 +265,9 @@ public class PokemonTrainerScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-//        cam.viewportWidth = width/32f;  //We will see width/32f units!
-//        cam.viewportHeight = cam.viewportWidth * height/width;
-//        cam.update();
+        cam.viewportWidth = width / ZOOM_VALUE;
+        cam.viewportHeight = cam.viewportWidth * height / width;
+        cam.update();
     }
 
     @Override
@@ -248,5 +304,7 @@ public class PokemonTrainerScreen implements Screen {
         walkDownTexture2.dispose();
 
         pokemonCenterTexture.dispose();
+        orthogonalTiledMapRenderer.dispose();
+        map.dispose();
     }
 }
