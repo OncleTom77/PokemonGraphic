@@ -8,13 +8,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 import static com.badlogic.drop.Direction.*;
@@ -24,7 +25,7 @@ public class PokemonTrainerScreen implements Screen {
 
     private static final float ANIMATION_DURATION = 1 / 6f;
     private static final float STEP_PRECISION = 1 / 5f;
-    private static final int UNIT_SIZE = 16;
+    static final int UNIT_SIZE = 16;
     static final float STEP_SIZE = STEP_PRECISION;
     private static final float ZOOM_VALUE = 25;
 
@@ -62,7 +63,9 @@ public class PokemonTrainerScreen implements Screen {
     private Rectangle targetPosition;
 
     private OrthographicCamera cam;
-    private List<Rectangle> collisionBoxes;
+    private List<CollidableObject> collidableObjects;
+
+    private Texture mainTexture;
 
     PokemonTrainerScreen(Drop game) {
         this.game = game;
@@ -98,7 +101,7 @@ public class PokemonTrainerScreen implements Screen {
         pokemonCenterTexture = new Texture(Gdx.files.internal("pokemon_center.png"));
         pokemonCenter = new Rectangle();
         pokemonCenter.width = 5;
-        pokemonCenter.height = 5 * 7f/8f;
+        pokemonCenter.height = 5 * 7f / 8f;
         pokemonCenter.x = 5;
         pokemonCenter.y = 5;
 
@@ -121,15 +124,12 @@ public class PokemonTrainerScreen implements Screen {
 
         orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(map, 1f / UNIT_SIZE);
 
+        mainTexture = new Texture(Gdx.files.internal("pokemon_tileset.png"));
+
         MapLayer collision_boxes = map.getLayers().get("collision_boxes");
-        collisionBoxes = StreamSupport.stream(collision_boxes.getObjects().spliterator(), true)
-                .map(object -> new Rectangle(
-                                object.getProperties().get("x", Float.class) / UNIT_SIZE,
-                                object.getProperties().get("y", Float.class) / UNIT_SIZE,
-                                object.getProperties().get("width", Float.class) / UNIT_SIZE,
-                                object.getProperties().get("height", Float.class) / UNIT_SIZE
-                        )
-                )
+        collidableObjects = StreamSupport.stream(collision_boxes.getObjects().spliterator(), true)
+                .map(object -> (RectangleMapObject) object)
+                .map((RectangleMapObject original) -> CollidableObject.fromObject(original, mainTexture))
                 .collect(toList());
     }
 
@@ -165,6 +165,10 @@ public class PokemonTrainerScreen implements Screen {
             batch.draw(pokemonCenterTexture, pokemonCenter.x, pokemonCenter.y, pokemonCenter.width, pokemonCenter.width * ((float) pokemonCenterTexture.getHeight() / pokemonCenterTexture.getWidth()));
             batch.draw(currentFrame, pokemonTrainer.x, pokemonTrainer.y, pokemonTrainer.width, pokemonTrainer.width * ((float) currentFrame.getHeight() / currentFrame.getWidth()));
         }
+
+        collidableObjects.stream()
+                .filter(collidableObject -> collidableObject.hides(pokemonTrainer))
+                .forEach(collidableObject -> collidableObject.reDraw(batch));
 
 //        game.font.draw(game.batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
         batch.end();
@@ -226,17 +230,25 @@ public class PokemonTrainerScreen implements Screen {
 
     private void trySetNewTargetPosition(float deltaTime, Direction direction) {
         Rectangle newTargetPosition = direction.getNewTargetPosition(pokemonTrainer);
+        boolean goodToGo = !collideFence(newTargetPosition)
+                && !collideBuilding(newTargetPosition);
 
-        Optional<Rectangle> collision = collisionBoxes.stream()
-                .filter(newTargetPosition::overlaps)
-                .findAny();
-
-        if (!collision.isPresent()) {
+        if (goodToGo) {
             targetPosition = newTargetPosition;
             manageMovement(deltaTime, direction);
         } else {
             this.direction = direction;
         }
+    }
+
+    private boolean collideBuilding(Rectangle newTargetPosition) {
+        return collidableObjects.stream()
+                .anyMatch(collidableObject -> collidableObject.overlaps(newTargetPosition));
+    }
+
+    private boolean collideFence(Rectangle position) {
+        TiledMapTileLayer fenceLayer = (TiledMapTileLayer) map.getLayers().get("fence");
+        return fenceLayer.getCell((int) position.x, (int) position.y) != null;
     }
 
     private void manageMovement(float deltaTime, Direction direction) {
@@ -302,6 +314,8 @@ public class PokemonTrainerScreen implements Screen {
         walkDownTexture1.dispose();
         standDownTexture.dispose();
         walkDownTexture2.dispose();
+
+        mainTexture.dispose();
 
         pokemonCenterTexture.dispose();
         orthogonalTiledMapRenderer.dispose();

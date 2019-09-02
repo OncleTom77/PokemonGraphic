@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.4" orientation="orthogonal" renderorder="left-up" width="50" height="30" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#ffffff" nextlayerid="10" nextobjectid="3">
+<map version="1.2" tiledversion="1.2.4" orientation="orthogonal" renderorder="left-up" width="50" height="30" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#ffffff" nextlayerid="16" nextobjectid="18">
  <tileset firstgid="1" source="pokemon_tiled_tileset.tsx"/>
- <layer id="7" name="background" width="50" height="30">
+ <layer id="12" name="background" width="50" height="30">
   <data encoding="base64" compression="gzip" text="text">
    H4sIAAAAAAAAE+2TwQ2AIBAE7ykUpFahVmGhShWWQQX6IRBjUI9EV7OT7Of43IQ9kTxzhZMS3t6dHnqPekuTSfsRj+nk3dEDymO0sWPpPO3e0Tz0EcVDm/CPKB6LEekVGQyWB/J9eBvzF4/uYj+QPUr2o0e5h9t1ih4YvXoyhBBCCCGE3GUFKIJ2/3AXAAA=
   </data>
  </layer>
- <layer id="8" name="foreground" width="50" height="30">
+ <layer id="13" name="fence" width="50" height="30">
   <data encoding="base64" compression="gzip" text="text">
-   H4sIAAAAAAAAE+3Vt07DUBTG8TOzUELbQxJjJ3kF6jtQtwgYqW9ACe0NaA9BW9mpG+zULTSJEtrfEpHi4KsYKbrxcD/ptxxdKeez7BsR/emwRTrRhW70oNdWz8OaQ3Y7wjFOcIozWz3XmbE2kfsARtHniPRjAIMYwrCjnuvuESQZzl2y2xWucYNb3Dnquc4UejzXyEExvx7jSZEJTGIK05hJqudh7JHjXJ7dPvCJL3zjIuo/zxW9j2Hq4SabElnEEpaxgtWUeu5Gdw835XpE0iKNaEIzWtCaVs/dVKOHG1WX82iwe63UY4V6vMREXvGGd+Rj3rv2wed3/LpkND1XVWbjInOYxwKy8WB3bWmXaveoTYjUoR4NiCSC/2eEqccae69jA5vYKukR9L2v1Hv+3xS+gYQlYqEdNhzL+01U+zmXy8jvftvsvYNd7GHf8p4Le48nzfeiiYmJiYmJiYmJicnf/ACs5j0icBcAAA==
+   H4sIAAAAAAAAE+3UWwqAIBCF4dmL7iyqJQduossKeikYimQQNMv/A1988uhxRPBHoxdZDGvwb580rjeeryNHEdYc89EvTffuab9UH605UpV6x9ZyTM42165ry5hDz9r1w/88pUvkyEfnsPY+Z89jgrvP9ZP+EzXec4rac4TK+wIAAAC0YAdMyHLacBcAAA==
+  </data>
+ </layer>
+ <layer id="14" name="grass" width="50" height="30">
+  <data encoding="base64" compression="gzip" text="text">
+   H4sIAAAAAAAAE+3PsQ0AIAwDwdTsPxBDMQCio6YgUXQnufdHAL+sEfNe9p9XOurp0nFoqaljS/YPAAAA+tn/gOhScBcAAA==
+  </data>
+ </layer>
+ <layer id="15" name="buildings" width="50" height="30">
+  <data encoding="base64" compression="gzip" text="text">
+   H4sIAAAAAAAAE+3Wx1WCQRSG4dsBKhgagD9CC0jowQA9YOrAAIodGKAHMPSgoD0YOzCA4XXtmcW/cYbjfc95Nnf1zW5E/r5iKLKIEsqooBqa7652xbZrDDDEDW5D893VliKRZaxgFTXUI/Pd1e7Ydo8HPOIJz5H57mqNWGQN69jAJrZi893VRmwb4wOf+PrZmjffXa3Jthb2cYA2DvPmu6ulCyIZzGIO81gomO/a716yIq94wztGGGdtr0redk5kB7vYQxOtnO1VyUt5IlOYxgzSyHi2VyXviM3HOMEpOuhO4Ds8X8RHgBARYt/2quT12NzHGc5xgcsJfEcx4E+NEsqooBrYXqVpmqZpmqZp/6NvkjTJGHAXAAA=
   </data>
  </layer>
  <objectgroup id="9" name="collision_boxes">
-  <object id="1" x="160" y="176" width="80" height="48"/>
-  <object id="2" x="128" y="240" width="176" height="16"/>
+  <object id="13" name="PokemonCenter" x="160" y="144" width="96" height="112"/>
+  <object id="16" name="House" x="464" y="0" width="96" height="128"/>
+  <object id="17" name="House" x="560" y="0" width="96" height="128"/>
  </objectgroup>
 </map>
