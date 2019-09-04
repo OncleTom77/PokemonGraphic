@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 import java.util.function.Function;
 
-import static com.badlogic.drop.PokemonTrainerScreen.STEP_SIZE;
+import static com.badlogic.drop.Trainer.STEP_SIZE;
 
 public enum Direction {
 

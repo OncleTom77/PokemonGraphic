@@ -8,26 +8,39 @@ import com.badlogic.gdx.math.Rectangle;
 
 import static com.badlogic.drop.PokemonTrainerScreen.UNIT_SIZE;
 
-abstract class CollidableObject extends RectangleMapObject {
+abstract class CollidableObject extends Rectangle {
 
-    private final Rectangle collisionBox;
+    final Rectangle drawingBox;
+    private final Rectangle relativeCollisionBox;
     private TextureRegion textureRegion;
+    private Texture texture;
 
-    CollidableObject(RectangleMapObject original, Texture mainTexture, int textureX, int textureY, Rectangle collisionBox) {
-        super(original.getRectangle().x / UNIT_SIZE,
-                original.getRectangle().y / UNIT_SIZE,
-                original.getRectangle().width / UNIT_SIZE,
-                original.getRectangle().height / UNIT_SIZE
+    CollidableObject(RectangleMapObject mapObject, Rectangle relativeCollisionBox) {
+        this(
+                // Convert pixel unit rectangle to our world unit rectangle
+                new Rectangle(
+                        mapObject.getRectangle().x / UNIT_SIZE,
+                        mapObject.getRectangle().y / UNIT_SIZE,
+                        mapObject.getRectangle().width / UNIT_SIZE,
+                        mapObject.getRectangle().height / UNIT_SIZE
+                ),
+                relativeCollisionBox
         );
+    }
 
-        this.setColor(original.getColor());
-        this.setName(original.getName());
-        this.setOpacity(original.getOpacity());
-        this.setVisible(original.isVisible());
-        this.getProperties().putAll(original.getProperties());
+    CollidableObject(Rectangle drawingBox, Rectangle relativeCollisionBox) {
+        this.drawingBox = drawingBox;
+        this.relativeCollisionBox = relativeCollisionBox;
+        this.textureRegion = null;
+        this.texture = null;
 
-        textureRegion = new TextureRegion(mainTexture, textureX, textureY, (int) original.getRectangle().width, (int) original.getRectangle().height);
-        this.collisionBox = new Rectangle(getRectangle().x + collisionBox.x, getRectangle().y + collisionBox.y, collisionBox.width, collisionBox.height);
+        Rectangle collisionBox = new Rectangle(
+                drawingBox.x + relativeCollisionBox.x,
+                drawingBox.y + relativeCollisionBox.y,
+                relativeCollisionBox.width,
+                relativeCollisionBox.height
+        );
+        this.set(collisionBox);
     }
 
     static CollidableObject fromObject(RectangleMapObject original, Texture mainTexture) {
@@ -41,16 +54,38 @@ abstract class CollidableObject extends RectangleMapObject {
         }
     }
 
-    void reDraw(Batch batch) {
-        batch.draw(textureRegion, getRectangle().x, getRectangle().y, getRectangle().width, getRectangle().height);
-    }
-
-    boolean overlaps(Rectangle rectangle) {
-        return collisionBox.overlaps(rectangle);
+    void draw(Batch batch) {
+        if (textureRegion != null) {
+            batch.draw(textureRegion, drawingBox.x, drawingBox.y, drawingBox.width, drawingBox.height);
+        } else if (texture != null) {
+//            batch.draw(texture, drawingBox.x, drawingBox.y, drawingBox.width, drawingBox.height);
+            batch.draw(texture, drawingBox.x, drawingBox.y, drawingBox.width, drawingBox.width * ((float) texture.getHeight() / texture.getWidth()));
+        } else {
+            throw new IllegalStateException("Draw method has been called before setting a TextureRegion or a Texture");
+        }
     }
 
     boolean hides(Rectangle rectangle) {
-        return getRectangle().overlaps(rectangle)
-                && collisionBox.y < rectangle.y;
+        return drawingBox.overlaps(rectangle)
+                && this.y < rectangle.y;
+    }
+
+    void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+
+    void setTextureRegion(TextureRegion textureRegion) {
+        this.textureRegion = textureRegion;
+    }
+
+    @Override
+    public Rectangle setPosition(float x, float y) {
+        drawingBox.x = x;
+        drawingBox.y = y;
+
+        return super.setPosition(
+                x + relativeCollisionBox.x,
+                y + relativeCollisionBox.y
+        );
     }
 }

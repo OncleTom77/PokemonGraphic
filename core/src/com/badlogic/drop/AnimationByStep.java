@@ -5,10 +5,16 @@ import com.badlogic.gdx.graphics.Texture;
 class AnimationByStep {
 
     private final int frameDuration;
+    private final int defaultFrameIndex;
     private final Texture[] frames;
 
-    AnimationByStep(int frameDuration, Texture... frames) {
+    AnimationByStep(int frameDuration, int defaultFrameIndex, Texture... frames) {
+        if (defaultFrameIndex >= frames.length) {
+            throw new IndexOutOfBoundsException();
+        }
+
         this.frameDuration = frameDuration;
+        this.defaultFrameIndex = defaultFrameIndex;
         this.frames = frames;
     }
 
@@ -21,5 +27,9 @@ class AnimationByStep {
         }
 
         return frames[frameNumber];
+    }
+
+    Texture getDefaultTexture() {
+        return frames[defaultFrameIndex];
     }
 }

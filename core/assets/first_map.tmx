@@ -16,12 +16,12 @@
    H4sIAAAAAAAAE+3PsQ0AIAwDwdTsPxBDMQCio6YgUXQnufdHAL+sEfNe9p9XOurp0nFoqaljS/YPAAAA+tn/gOhScBcAAA==
   </data>
  </layer>
- <layer id="15" name="buildings" width="50" height="30">
+ <layer id="15" name="buildings" width="50" height="30" visible="0">
   <data encoding="base64" compression="gzip" text="text">
    H4sIAAAAAAAAE+3Wx1WCQRSG4dsBKhgagD9CC0jowQA9YOrAAIodGKAHMPSgoD0YOzCA4XXtmcW/cYbjfc95Nnf1zW5E/r5iKLKIEsqooBqa7652xbZrDDDEDW5D893VliKRZaxgFTXUI/Pd1e7Ydo8HPOIJz5H57mqNWGQN69jAJrZi893VRmwb4wOf+PrZmjffXa3Jthb2cYA2DvPmu6ulCyIZzGIO81gomO/a716yIq94wztGGGdtr0redk5kB7vYQxOtnO1VyUt5IlOYxgzSyHi2VyXviM3HOMEpOuhO4Ds8X8RHgBARYt/2quT12NzHGc5xgcsJfEcx4E+NEsqooBrYXqVpmqZpmqZp/6NvkjTJGHAXAAA=
   </data>
  </layer>
- <objectgroup id="9" name="collision_boxes">
+ <objectgroup id="9" name="building_boxes">
   <object id="13" name="PokemonCenter" x="160" y="144" width="96" height="112"/>
   <object id="16" name="House" x="464" y="0" width="96" height="128"/>
   <object id="17" name="House" x="560" y="0" width="96" height="128"/>
