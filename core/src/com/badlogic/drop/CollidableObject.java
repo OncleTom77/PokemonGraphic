@@ -28,6 +28,12 @@ abstract class CollidableObject extends Rectangle {
         );
     }
 
+    /**
+     *
+     * @param drawingBox in World Unit dimension. (x, y) represents the bottom left
+     * @param relativeCollisionBox in World Unit dimension, relative to the origin (x, y) of the drawingBox.
+     *                             (x, y) represents the bottom left of the collision box
+     */
     CollidableObject(Rectangle drawingBox, Rectangle relativeCollisionBox) {
         this.drawingBox = drawingBox;
         this.relativeCollisionBox = relativeCollisionBox;
@@ -49,6 +55,8 @@ abstract class CollidableObject extends Rectangle {
                 return new PokemonCenter(original, mainTexture);
             case "House":
                 return new House(original, mainTexture);
+            case "Tree":
+                return new Tree(original, mainTexture);
             default:
                 throw new IllegalArgumentException("Unknown collidable object '" + original.getName() + "'.");
         }

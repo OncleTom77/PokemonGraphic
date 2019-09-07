@@ -1,29 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.4" orientation="orthogonal" renderorder="left-up" width="50" height="30" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#ffffff" nextlayerid="16" nextobjectid="18">
+<map version="1.2" tiledversion="1.2.4" orientation="orthogonal" renderorder="left-up" width="50" height="30" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#ffffff" nextlayerid="19" nextobjectid="35">
  <tileset firstgid="1" source="pokemon_tiled_tileset.tsx"/>
  <layer id="12" name="background" width="50" height="30">
-  <data encoding="base64" compression="gzip" text="text">
-   H4sIAAAAAAAAE+2TwQ2AIBAE7ykUpFahVmGhShWWQQX6IRBjUI9EV7OT7Of43IQ9kTxzhZMS3t6dHnqPekuTSfsRj+nk3dEDymO0sWPpPO3e0Tz0EcVDm/CPKB6LEekVGQyWB/J9eBvzF4/uYj+QPUr2o0e5h9t1ih4YvXoyhBBCCCGE3GUFKIJ2/3AXAAA=
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAEzvMwcBweBSPYipjf07c+DYnaWaZAbE5HmxBQ3+44cDuQHyIRLMIqT9CQ39cwoEvDzF/dAgyMHQi4S5B2vkjjQuRxpDFkdMeNnFi0qOIEAODKBIWE6KdP8jFxMQjPf1xC0+Zgg8HEFHe0NMftMwflPrjExcCDxd/+FEhfQy0P2jlvlF/EOePI2hpatQfgyNdDRa8AOjuhUh4ERCPglEwCrCDDqT2+1AGIkjl1lAGC0bLrVEwCkbBKKApAABIzFqCcBcAAA==
+  </data>
+ </layer>
+ <layer id="16" name="stairway" width="50" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAE+3PQQ5AMBQE0LkBSZN22XbP3XAFDkU4Dk6B+HsbSaVF5iWznhmAiIiI6F0KBZQq9YpwvXwYfvCDrloNdDr1inCZAXITv3d2wCJZXfzuJ1UeqCWNT70kzCb7d8nx8R9EdN9ogcmmXkFE9E8nOuanSnAXAAA=
   </data>
  </layer>
  <layer id="13" name="fence" width="50" height="30">
-  <data encoding="base64" compression="gzip" text="text">
+  <data encoding="base64" compression="gzip">
    H4sIAAAAAAAAE+3UWwqAIBCF4dmL7iyqJQduossKeikYimQQNMv/A1988uhxRPBHoxdZDGvwb580rjeeryNHEdYc89EvTffuab9UH605UpV6x9ZyTM42165ry5hDz9r1w/88pUvkyEfnsPY+Z89jgrvP9ZP+EzXec4rac4TK+wIAAAC0YAdMyHLacBcAAA==
   </data>
  </layer>
  <layer id="14" name="grass" width="50" height="30">
-  <data encoding="base64" compression="gzip" text="text">
+  <data encoding="base64" compression="gzip">
    H4sIAAAAAAAAE+3PsQ0AIAwDwdTsPxBDMQCio6YgUXQnufdHAL+sEfNe9p9XOurp0nFoqaljS/YPAAAA+tn/gOhScBcAAA==
   </data>
  </layer>
  <layer id="15" name="buildings" width="50" height="30" visible="0">
-  <data encoding="base64" compression="gzip" text="text">
+  <data encoding="base64" compression="gzip">
    H4sIAAAAAAAAE+3Wx1WCQRSG4dsBKhgagD9CC0jowQA9YOrAAIodGKAHMPSgoD0YOzCA4XXtmcW/cYbjfc95Nnf1zW5E/r5iKLKIEsqooBqa7652xbZrDDDEDW5D893VliKRZaxgFTXUI/Pd1e7Ydo8HPOIJz5H57mqNWGQN69jAJrZi893VRmwb4wOf+PrZmjffXa3Jthb2cYA2DvPmu6ulCyIZzGIO81gomO/a716yIq94wztGGGdtr0redk5kB7vYQxOtnO1VyUt5IlOYxgzSyHi2VyXviM3HOMEpOuhO4Ds8X8RHgBARYt/2quT12NzHGc5xgcsJfEcx4E+NEsqooBrYXqVpmqZpmqZp/6NvkjTJGHAXAAA=
+  </data>
+ </layer>
+ <layer id="17" name="trees" width="50" height="30" visible="0">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAE+3RwQkAIRRDQU9aikVbxja4BXw8KgZm4N0DaQ0AuG31WqI5aonS/tjtTftjt/cbtZel7QUAAM75ARIriaJwFwAA
   </data>
  </layer>
  <objectgroup id="9" name="building_boxes">
   <object id="13" name="PokemonCenter" x="160" y="144" width="96" height="112"/>
   <object id="16" name="House" x="464" y="0" width="96" height="128"/>
   <object id="17" name="House" x="560" y="0" width="96" height="128"/>
+ </objectgroup>
+ <objectgroup id="18" name="tree_boxes">
+  <object id="18" name="Tree" x="384" y="192" width="16" height="48"/>
+  <object id="20" name="Tree" x="400" y="192" width="16" height="48"/>
+  <object id="21" name="Tree" x="416" y="192" width="16" height="48"/>
+  <object id="22" name="Tree" x="432" y="192" width="16" height="48"/>
+  <object id="23" name="Tree" x="448" y="192" width="16" height="48"/>
+  <object id="24" name="Tree" x="480" y="144" width="16" height="48"/>
+  <object id="25" name="Tree" x="496" y="144" width="16" height="48"/>
+  <object id="27" name="Tree" x="512" y="144" width="16" height="48"/>
+  <object id="28" name="Tree" x="528" y="144" width="16" height="48"/>
+  <object id="29" name="Tree" x="544" y="144" width="16" height="48"/>
+  <object id="30" name="Tree" x="480" y="176" width="16" height="48"/>
+  <object id="31" name="Tree" x="496" y="176" width="16" height="48"/>
+  <object id="32" name="Tree" x="512" y="176" width="16" height="48"/>
+  <object id="33" name="Tree" x="528" y="176" width="16" height="48"/>
+  <object id="34" name="Tree" x="544" y="176" width="16" height="48"/>
  </objectgroup>
 </map>

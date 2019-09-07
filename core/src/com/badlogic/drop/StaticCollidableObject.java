@@ -7,6 +7,14 @@ import com.badlogic.gdx.math.Rectangle;
 
 abstract class StaticCollidableObject extends CollidableObject {
 
+    /**
+     *
+     * @param mapObject
+     * @param relativeCollisionBox
+     * @param mainTexture
+     * @param textureX Left position of the texture
+     * @param textureY Top position of the texture
+     */
     StaticCollidableObject(RectangleMapObject mapObject, Rectangle relativeCollisionBox, Texture mainTexture, int textureX, int textureY) {
         super(mapObject, relativeCollisionBox);
 

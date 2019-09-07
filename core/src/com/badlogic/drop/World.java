@@ -19,6 +19,7 @@ class World {
 
     private TiledMap map;
     private List<CollidableObject> buildings;
+    private List<CollidableObject> trees;
     private List<CollidableObject> characters;
 
     World(TiledMap map, Texture mainTexture) {
@@ -29,16 +30,22 @@ class World {
                 .map(object -> (RectangleMapObject) object)
                 .map((RectangleMapObject original) -> CollidableObject.fromObject(original, mainTexture))
                 .collect(toList());
+        MapLayer tree_boxes = map.getLayers().get("tree_boxes");
+        trees = StreamSupport.stream(tree_boxes.getObjects().spliterator(), true)
+                .map(object -> (RectangleMapObject) object)
+                .map((RectangleMapObject original) -> CollidableObject.fromObject(original, mainTexture))
+                .collect(toList());
         characters = new ArrayList<>();
     }
 
     boolean collides(Rectangle rectangle) {
         return collideFence(rectangle)
-                || collideBuilding(rectangle);
+                || collideEnvironment(rectangle);
     }
 
-    private boolean collideBuilding(Rectangle newTargetPosition) {
-        return buildings.stream()
+    private boolean collideEnvironment(Rectangle newTargetPosition) {
+        return Stream.of(buildings.stream(), trees.stream())
+                .flatMap(collidableObjects -> collidableObjects)
                 .anyMatch(collidableObject -> collidableObject.overlaps(newTargetPosition));
     }
 
@@ -48,7 +55,7 @@ class World {
     }
 
     void draw(Batch batch) {
-        Stream.of(buildings.stream(), characters.stream())
+        Stream.of(buildings.stream(), trees.stream(), characters.stream())
                 .flatMap(collidableObjectStream -> collidableObjectStream)
                 .sorted((o1, o2) -> (int) (o2.y - o1.y))
                 .forEach(collidableObject -> collidableObject.draw(batch));
