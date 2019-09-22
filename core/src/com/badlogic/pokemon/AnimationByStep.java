@@ -1,4 +1,4 @@
-package com.badlogic.drop;
+package com.badlogic.pokemon;
 
 import com.badlogic.gdx.graphics.Texture;
 

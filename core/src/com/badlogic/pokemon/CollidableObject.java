@@ -1,4 +1,4 @@
-package com.badlogic.drop;
+package com.badlogic.pokemon;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
 
-import static com.badlogic.drop.PokemonTrainerScreen.UNIT_SIZE;
+import static com.badlogic.pokemon.PokemonTrainerScreen.UNIT_SIZE;
 
 abstract class CollidableObject extends Rectangle {
 
@@ -71,11 +71,6 @@ abstract class CollidableObject extends Rectangle {
         } else {
             throw new IllegalStateException("Draw method has been called before setting a TextureRegion or a Texture");
         }
-    }
-
-    boolean hides(Rectangle rectangle) {
-        return drawingBox.overlaps(rectangle)
-                && this.y < rectangle.y;
     }
 
     void setTexture(Texture texture) {

@@ -1,10 +1,10 @@
-package com.badlogic.drop;
+package com.badlogic.pokemon;
 
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.function.Function;
 
-import static com.badlogic.drop.Trainer.STEP_SIZE;
+import static com.badlogic.pokemon.Trainer.STEP_SIZE;
 
 public enum Direction {
 
@@ -46,8 +46,6 @@ public enum Direction {
     );
 
     private static float computeNewPositionWith2DigitsPrecisionValue(double newValue) {
-        // Check screen boundaries for new value to avoid character to be off the screen.
-
         return (float) (Math.round((newValue) * 100) / 100.0);
     }
 

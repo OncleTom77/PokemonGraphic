@@ -1,16 +1,17 @@
-package com.badlogic.drop;
+package com.badlogic.pokemon;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.List;
 
-import static com.badlogic.drop.Direction.*;
+import static com.badlogic.pokemon.Direction.*;
 
 class Trainer extends AnimatedCollidableObject {
+
     private static final Rectangle RELATIVE_COLLISION_BOX = new Rectangle(0, 0, 1, 1);
-    private static final float ANIMATION_DURATION = 1 / 6f;
-    static final float STEP_PRECISION = 1 / 5f;
+    private static final float ANIMATION_DURATION = 1 / 6f; // In which time the animation takes to be completed. Little means faster
+    static final float STEP_PRECISION = 1 / 5f; // How many different steps the animation has during
     static final float STEP_SIZE = STEP_PRECISION;
 
     private double animationState;

@@ -1,5 +1,6 @@
-package com.badlogic.drop;
+package com.badlogic.pokemon;
 
+import com.badlogic.drop.Drop;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,8 +14,8 @@ import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Arrays;
 
-import static com.badlogic.drop.Direction.RIGHT;
-import static com.badlogic.drop.Trainer.STEP_PRECISION;
+import static com.badlogic.pokemon.Direction.RIGHT;
+import static com.badlogic.pokemon.Trainer.STEP_PRECISION;
 
 public class PokemonTrainerScreen implements Screen {
 
@@ -37,19 +38,16 @@ public class PokemonTrainerScreen implements Screen {
     private final Texture standLeftTexture;
     private final Texture walkLeftTexture2;
 
-    private final Texture pokemonCenterTexture;
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     private final World world;
     private final Trainer trainer;
 
-    private Rectangle pokemonCenter;
-
     private OrthographicCamera cam;
 
     private Texture mainTexture;
 
-    PokemonTrainerScreen(Drop game) {
+    public PokemonTrainerScreen(Drop game) {
 
         mainTexture = new Texture(Gdx.files.internal("pokemon_tileset.png"));
         map = new TmxMapLoader().load("first_map.tmx");
@@ -86,13 +84,6 @@ public class PokemonTrainerScreen implements Screen {
 
         world.addCharacter(trainer);
 
-        pokemonCenterTexture = new Texture(Gdx.files.internal("pokemon_center.png"));
-        pokemonCenter = new Rectangle();
-        pokemonCenter.width = 5;
-        pokemonCenter.height = 5 * 7f / 8f;
-        pokemonCenter.x = 5;
-        pokemonCenter.y = 5;
-
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 
@@ -103,7 +94,6 @@ public class PokemonTrainerScreen implements Screen {
         cam.update();
 
         orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(map, 1f / UNIT_SIZE);
-
     }
 
     @Override
@@ -114,11 +104,11 @@ public class PokemonTrainerScreen implements Screen {
     @Override
     public void render(float delta) {
         update(delta);
+
         cam.position.x = trainer.getPosition().x;
         cam.position.y = trainer.getPosition().y;
 
         cam.update();
-//        game.batch.setProjectionMatrix(cam.combined);
 
         Gdx.gl.glClearColor(1, 1, 1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -127,17 +117,9 @@ public class PokemonTrainerScreen implements Screen {
         orthogonalTiledMapRenderer.render();
 
         Batch batch = orthogonalTiledMapRenderer.getBatch();
+
         batch.begin();
-
-//        batch.draw(pokemonCenterTexture, pokemonCenter.x, pokemonCenter.y, pokemonCenter.width, pokemonCenter.width * ((float) pokemonCenterTexture.getHeight() / pokemonCenterTexture.getWidth()));
-
-//        trainer.draw(batch);
         world.draw(batch);
-
-//        collidableObjects.stream()
-//                .filter(collidableObject -> collidableObject.hides(pokemonTrainer))
-//                .forEach(collidableObject -> collidableObject.reDraw(batch));
-
 //        game.font.draw(game.batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
         batch.end();
     }
@@ -188,7 +170,6 @@ public class PokemonTrainerScreen implements Screen {
 
         mainTexture.dispose();
 
-        pokemonCenterTexture.dispose();
         orthogonalTiledMapRenderer.dispose();
         map.dispose();
     }
