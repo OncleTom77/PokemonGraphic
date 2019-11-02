@@ -11,8 +11,8 @@ class Trainer extends AnimatedCollidableObject {
 
     private static final Rectangle RELATIVE_COLLISION_BOX = new Rectangle(0, 0, 1, 1);
     private static final float ANIMATION_DURATION = 1 / 6f; // In which time the animation takes to be completed. Little means faster
-    static final float STEP_PRECISION = 1 / 5f; // How many different steps the animation has during
-    static final float STEP_SIZE = STEP_PRECISION;
+    static final float STEP_PRECISION = 1 / 8f; // How many different movement steps the trainer makes for one animation step.
+    // Pay attention to the decimal result of the value. If it is infinite, it can lead to infinite movement
 
     private double animationState;
     private int nbTimeMove;

@@ -4,13 +4,11 @@ import com.badlogic.gdx.math.Rectangle;
 
 import java.util.function.Function;
 
-import static com.badlogic.pokemon.Trainer.STEP_SIZE;
-
 public enum Direction {
 
     UP(
             position -> {
-                position.y = computeNewPositionWith2DigitsPrecisionValue(position.y + STEP_SIZE);
+                position.y = computeNewPositionWith2DigitsPrecisionValue(position.y + Trainer.STEP_PRECISION);
                 return position;
             },
             position -> {
@@ -19,7 +17,7 @@ public enum Direction {
     ),
     RIGHT(
             position -> {
-                position.x = computeNewPositionWith2DigitsPrecisionValue(position.x + STEP_SIZE);
+                position.x = computeNewPositionWith2DigitsPrecisionValue(position.x + Trainer.STEP_PRECISION);
                 return position;
             },
             position -> {
@@ -28,7 +26,7 @@ public enum Direction {
     ),
     DOWN(
             position -> {
-                position.y = computeNewPositionWith2DigitsPrecisionValue(position.y - STEP_SIZE);
+                position.y = computeNewPositionWith2DigitsPrecisionValue(position.y - Trainer.STEP_PRECISION);
                 return position;
             },
             position -> {
@@ -37,7 +35,7 @@ public enum Direction {
     ),
     LEFT(
             position -> {
-                position.x = computeNewPositionWith2DigitsPrecisionValue(position.x - STEP_SIZE);
+                position.x = computeNewPositionWith2DigitsPrecisionValue(position.x - Trainer.STEP_PRECISION);
                 return position;
             },
             position -> {
@@ -46,7 +44,7 @@ public enum Direction {
     );
 
     private static float computeNewPositionWith2DigitsPrecisionValue(double newValue) {
-        return (float) (Math.round((newValue) * 100) / 100.0);
+        return (float) (Math.round((newValue) * 1000) / 1000.0);
     }
 
     private final Function<Rectangle, Rectangle> updatePosition;
