@@ -1,34 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.4" orientation="orthogonal" renderorder="left-up" width="50" height="30" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#ffffff" nextlayerid="19" nextobjectid="35">
+<map version="1.2" tiledversion="1.2.5" orientation="orthogonal" renderorder="left-up" width="50" height="30" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#ffffff" nextlayerid="23" nextobjectid="41">
  <tileset firstgid="1" source="pokemon_tiled_tileset.tsx"/>
  <layer id="12" name="background" width="50" height="30">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAEzvMwcBweBSPYipjf07c+DYnaWaZAbE5HmxBQ3+44cDuQHyIRLMIqT9CQ39cwoEvDzF/dAgyMHQi4S5B2vkjjQuRxpDFkdMeNnFi0qOIEAODKBIWE6KdP8jFxMQjPf1xC0+Zgg8HEFHe0NMftMwflPrjExcCDxd/+FEhfQy0P2jlvlF/EOePI2hpatQfgyNdDRa8AOjuhUh4ERCPglEwCrCDDqT2+1AGIkjl1lAGC0bLrVEwCkbBKKApAABIzFqCcBcAAA==
+   H4sIAAAAAAAAE+2YQQ6CMBBFWVKWJl5FOYHu0BPITu9ZOIHu8BaeQLpomExmagsMFNPFT8q0TPrS36GlybOsSUqaWRfF663Cch16HR0qBTlOjM69dGCuX+NbQY4no1fiYHUvBo/BOPQeFffxo5nzfjdIkmOsfNZxSY7OUVNcunrUmyU5pPfHFI5PMehfOKoZ/LE2h9T8EocfR4s8lTji8FUsCj2XjP2WSSuUA/spFt0UrVpti8N173kQ+zdWjtD9BDlc978yd4/B/dyzjcF+qj2FA55DzB0Y1gBzBjFjNFEbzFibR6O8+NnGYD/VnsIBpZk+Ko7nYvLaO5b18hY5OvBPo0PrtSUO066AH/E7FfAp146FwyeXVL3y5YD/F+weCOGQrldQcI1xnLtTce/h2JK+WltfRnynJ3AXAAA=
+  </data>
+ </layer>
+ <layer id="20" name="mountain" width="50" height="30">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAE+3PMQoAIQwF0VxBEc/seorVk2rpgpUI+5V5kCKQImMGAGdIzuwZJru/P1oT/HePfn6njg4tdGihQwsdWm7pePvfZZh6aAcAAAD2aqp1G9ZwFwAA
   </data>
  </layer>
  <layer id="16" name="stairway" width="50" height="30">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAE+3PQQ5AMBQE0LkBSZN22XbP3XAFDkU4Dk6B+HsbSaVF5iWznhmAiIiI6F0KBZQq9YpwvXwYfvCDrloNdDr1inCZAXITv3d2wCJZXfzuJ1UeqCWNT70kzCb7d8nx8R9EdN9ogcmmXkFE9E8nOuanSnAXAAA=
+   H4sIAAAAAAAAE+3U0Q1AQBCE4enkVlOCIgR1oogLihDE9nCbrDvzJfP+78sCRPQHcwAW3Rq8S9I0ArS6TpxDDNXiXWAjineBjb7yLrBxFnIHEZVpE2DXHeIckmjQXzvqpsx/7qX9t+7J/A4iIiKiL3gBXelE7HAXAAA=
   </data>
  </layer>
  <layer id="13" name="fence" width="50" height="30">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAE+3UWwqAIBCF4dmL7iyqJQduossKeikYimQQNMv/A1988uhxRPBHoxdZDGvwb580rjeeryNHEdYc89EvTffuab9UH605UpV6x9ZyTM42165ry5hDz9r1w/88pUvkyEfnsPY+Z89jgrvP9ZP+EzXec4rac4TK+wIAAAC0YAdMyHLacBcAAA==
+   H4sIAAAAAAAAE+3UywmAMBAE0JxtI+lM/HQspAk/FXhQYVEMw2J0MfNgL54ycbLO0R91wbkJmDZ8fdK0BjxfzRwqfbUNCs0x7v2SZO/uvj/Zx1QuNIfWW/+xtByDx/baeZaMOeSunY2+c4SmS8yRj8yB9j5nz1Oiv+71g3wTFu9Zw3qOaLwvREREREQlWAFIH66ZcBcAAA==
   </data>
  </layer>
+ <objectgroup id="22" name="stairway_freeway_boxes">
+  <object id="36" x="32" y="96" width="16" height="16"/>
+  <object id="39" x="64" y="128" width="16" height="16"/>
+  <object id="40" x="32" y="272" width="16" height="16"/>
+ </objectgroup>
  <layer id="14" name="grass" width="50" height="30">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAE+3PsQ0AIAwDwdTsPxBDMQCio6YgUXQnufdHAL+sEfNe9p9XOurp0nFoqaljS/YPAAAA+tn/gOhScBcAAA==
+   H4sIAAAAAAAAE+2VSwqAMAwFu/b+B/JQHkBdCKGkNrHFhjADgdpPfENBSwGAvzi2sstanecreMQji8cNLjHJ6LI6BwAAwCyu/1qoGvEY3VOva89yzjL2kslDu1fLvPX9eNjBo52l12v29+o55/F469Pr1dqvjb3ULlqe6B7SQcu+ok68cXEocBcAAA==
   </data>
  </layer>
- <layer id="15" name="buildings" width="50" height="30" visible="0">
+ <layer id="15" name="buildings" width="50" height="30">
   <data encoding="base64" compression="gzip">
    H4sIAAAAAAAAE+3Wx1WCQRSG4dsBKhgagD9CC0jowQA9YOrAAIodGKAHMPSgoD0YOzCA4XXtmcW/cYbjfc95Nnf1zW5E/r5iKLKIEsqooBqa7652xbZrDDDEDW5D893VliKRZaxgFTXUI/Pd1e7Ydo8HPOIJz5H57mqNWGQN69jAJrZi893VRmwb4wOf+PrZmjffXa3Jthb2cYA2DvPmu6ulCyIZzGIO81gomO/a716yIq94wztGGGdtr0redk5kB7vYQxOtnO1VyUt5IlOYxgzSyHi2VyXviM3HOMEpOuhO4Ds8X8RHgBARYt/2quT12NzHGc5xgcsJfEcx4E+NEsqooBrYXqVpmqZpmqZp/6NvkjTJGHAXAAA=
   </data>
  </layer>
- <layer id="17" name="trees" width="50" height="30" visible="0">
+ <layer id="17" name="trees" width="50" height="30">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAE+3RwQkAIRRDQU9aikVbxja4BXw8KgZm4N0DaQ0AuG31WqI5aonS/tjtTftjt/cbtZel7QUAAM75ARIriaJwFwAA
+   H4sIAAAAAAAAE+3RsQ2AMAxE0auSklTJCAwKWzAGC6ZIabkFDv0nneTyS5YAAMDTrhLnaK9xjtz+kfW6/SPrvWvc1xxdOvu6HXoz25DaeLsCAAAA+I8J957pA3AXAAA=
   </data>
  </layer>
  <objectgroup id="9" name="building_boxes">
@@ -52,5 +62,6 @@
   <object id="32" name="Tree" x="512" y="176" width="16" height="48"/>
   <object id="33" name="Tree" x="528" y="176" width="16" height="48"/>
   <object id="34" name="Tree" x="544" y="176" width="16" height="48"/>
+  <object id="35" name="Rock" x="336" y="224" width="32" height="32"/>
  </objectgroup>
 </map>

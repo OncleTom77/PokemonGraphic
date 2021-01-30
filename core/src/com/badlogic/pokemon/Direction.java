@@ -1,6 +1,8 @@
 package com.badlogic.pokemon;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.function.Function;
 
@@ -61,5 +63,16 @@ public enum Direction {
 
     Rectangle getNewTargetPosition(Rectangle actualPosition) {
         return getNewTargetPosition.apply(actualPosition);
+    }
+
+    static Direction getDirectionOfPosition(Vector2 position, Vector3 ref) {
+        if (position.y < ref.y) {
+            return DOWN;
+        } else if (position.y > ref.y) {
+            return UP;
+        } else if (position.x < ref.x) {
+            return LEFT;
+        }
+        return RIGHT;
     }
 }

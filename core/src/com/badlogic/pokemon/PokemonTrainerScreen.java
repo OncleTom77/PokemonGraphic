@@ -11,10 +11,12 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.Arrays;
 
 import static com.badlogic.pokemon.Direction.RIGHT;
+import static com.badlogic.pokemon.Trainer.ANIMATION_DURATION;
 import static com.badlogic.pokemon.Trainer.STEP_PRECISION;
 
 public class PokemonTrainerScreen implements Screen {
@@ -44,6 +46,13 @@ public class PokemonTrainerScreen implements Screen {
     private final Trainer trainer;
 
     private OrthographicCamera cam;
+    private Rectangle camTargetPosition;
+    private double animationState;
+    private int nbMove;
+    private Direction camTargetDirection;
+    private boolean camFreeze;
+    private boolean zoomIn;
+    private int mapLevel = 0;
 
     private Texture mainTexture;
 
@@ -92,6 +101,7 @@ public class PokemonTrainerScreen implements Screen {
         cam = new OrthographicCamera();
         cam.setToOrtho(false, ZOOM_VALUE, ZOOM_VALUE * h / w);
         cam.update();
+        camFreeze = false;
 
         orthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(map, 1f / UNIT_SIZE);
     }
@@ -104,11 +114,6 @@ public class PokemonTrainerScreen implements Screen {
     @Override
     public void render(float delta) {
         update(delta);
-
-        cam.position.x = trainer.getPosition().x;
-        cam.position.y = trainer.getPosition().y;
-
-        cam.update();
 
         Gdx.gl.glClearColor(1, 1, 1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -126,6 +131,59 @@ public class PokemonTrainerScreen implements Screen {
 
     private void update(float delta) {
         trainer.update(delta, Gdx.input);
+
+        updateCamPosition(delta);
+    }
+
+    private void updateCamPosition(float delta) {
+        trainer.getLeavingStairwayPosition().ifPresent(rectangle -> {
+            if (rectangle.x == cam.position.x && rectangle.y == cam.position.y) {
+                camFreeze = true;
+            } else {
+                // Initiate moving camera to trainer target position
+                camTargetPosition = rectangle;
+                camTargetDirection = Direction.getDirectionOfPosition(rectangle.getPosition(Vector2.Zero), cam.position);
+                animationState = 0;
+                nbMove = 0;
+                mapLevel = mapLevel == 1 ? 0 : 1;
+                cam.zoom = mapLevel == 0 ? 1 : (float) 0.95;
+            }
+        });
+
+        if (cam.position.x == trainer.x && cam.position.y == trainer.y) {
+            camFreeze = false;
+        }
+
+//        if (camTargetPosition != null) {
+//            animationState += delta;
+//            while (animationState >= (nbMove + 1) * STEP_PRECISION * ANIMATION_DURATION * 1 / 2) {
+//                nbMove++;
+//                Rectangle updatedRectPosition = camTargetDirection.updateRectPosition(new Rectangle(cam.position.x, cam.position.y, 0, 0));
+//                cam.position.x = updatedRectPosition.x;
+//                cam.position.y = updatedRectPosition.y;
+//                cam.zoom += zoomIn ? -0.005 : 0.005;
+//                cam.zoom = (float) (Math.round((cam.zoom) * 1000) / 1000.0);
+//
+//                if (cam.position.x == camTargetPosition.x && cam.position.y == camTargetPosition.y) {
+//                    System.out.println("New zoom value : " + cam.zoom);
+//                    camTargetPosition = null;
+//                    break;
+//                }
+//            }
+//        } else if (!trainer.isEnteringOnStairway() && !trainer.isOnStairway() && !camFreeze) {
+            // Just follow trainer
+            cam.position.x = trainer.x;
+            cam.position.y = trainer.y;
+//        }
+
+        if (trainer.isOnStairway()) {
+            cam.zoom = (float) 0.975;
+        }
+
+//        if (!lastCamPosition.equals(cam.position)) {
+//            System.out.println(cam.position);
+//        }
+        cam.update();
     }
 
     @Override

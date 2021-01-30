@@ -5,6 +5,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.pokemon.environment.House;
+import com.badlogic.pokemon.environment.PokemonCenter;
+import com.badlogic.pokemon.environment.Rock;
+import com.badlogic.pokemon.environment.Tree;
 
 import static com.badlogic.pokemon.PokemonTrainerScreen.UNIT_SIZE;
 
@@ -57,6 +61,8 @@ abstract class CollidableObject extends Rectangle {
                 return new House(original, mainTexture);
             case "Tree":
                 return new Tree(original, mainTexture);
+            case "Rock":
+                return new Rock(original, mainTexture);
             default:
                 throw new IllegalArgumentException("Unknown collidable object '" + original.getName() + "'.");
         }
